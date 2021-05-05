@@ -1,9 +1,18 @@
 {
-    "name": "studioazura/wn-ngmedia-plugin",
+    "name": "mercator/wn-media-plugin",
     "type": "winter-plugin",
-    "description": "Generate responsive optimized images using picture and source tags.",
+    "description": "Improved media handling for Winter CMS. In particular, a Winter CMS image resizer replacement, providing next generation image formats where they can be displayed by the requester's browsers.",
     "keywords": ["winter", "wintercms", "laravel", "image", "next generation", "NG", "webp", "resize", "resizer", "extension", "plugin", "php"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Helmut Kaufmann",
+            "role": "Author"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
+        "php": ">=7.0",
+        "composer/installers": "~1.0"
     }
 }
