@@ -1,0 +1,9 @@
+{
+    "name": "studioazura/wn-ngmedia-plugin",
+    "type": "winter-plugin",
+    "description": "Generate responsive optimized images using picture and source tags.",
+    "keywords": ["winter", "wintercms", "laravel", "image", "next generation", "NG", "webp", "resize", "resizer", "extension", "plugin", "php"],
+    "license": "MIT",
+    "require": {
+    }
+}
