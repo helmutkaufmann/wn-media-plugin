@@ -23,7 +23,7 @@ it will return the image in *webp* format if the browser is able to process it.
 ```
 
 The filter supports Winter's *filter* options, please, see the respective documentation.
-You can also use [http://image.intervention.io](Intervention) functions.
+You can also use [Intervention](http://image.intervention.io) functions.
 ```
 {{ image | iresize(150, 100, { manipulation: "blur(1)->colorize(-100, 0, 0)->flip('v')" }}
 ```
