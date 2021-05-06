@@ -1,7 +1,9 @@
 # Winter CMS Media Plugin
 Improved media handling for Winter CMS, including:
 - Winter CMS image resizer replacement: Rendering modern image formats where they can be displayed by the browsers.
-- Advanced image manipulation using the[http://image.intervention.io](Intervention) library.
+- Advanced image manipulation using the [Intervention](http://image.intervention.io) library.
+
+Note that this is pre-production version of the plugin to demonstrate capabilities.
 
 ## Installation
 #### composer
@@ -24,7 +26,7 @@ it will return the image in *webp* format if the browser is able to process it.
 ```
 
 The filter supports Winter's *filter* options, please, see the respective documentation.
-You can also use many (but not yet all) [http://image.intervention.io](Intervention) functions by specifying an 
+You can also use many (but not yet all) [Intervention](http://image.intervention.io) functions by specifying an 
 option called *manipulation*. Multiple filters can be daisy-changed as per the following example. 
 ```
 {{ image | iresize(150, 100, { manipulation: "blur(1)->colorize(-100, 0, 0)->flip('v')" }}
@@ -32,7 +34,7 @@ option called *manipulation*. Multiple filters can be daisy-changed as per the f
 This example would first resize the image to 150x100px, add a 1% blur filter to off take all red out of the image
 and finally flip it vertically.
 
-While [http://image.intervention.io](Intervention) holds the current description of all available functions,
+While [Intervention](http://image.intervention.io) holds the current description of all available functions,
 here are some of the probably most common ones:
 
 ##### blur(amount = 1)
@@ -86,11 +88,11 @@ This is a production version of the plugin. Not all options of the original resi
 in particular *mode, offset* and *sharpen*. Implementation will follow in the very near future.
 
 ## A word of caution
-[http://image.intervention.io](Intervention) is rather resource-intensive. As a consequence:
-- Apply [http://image.intervention.io](Intervention) carefully.
+[Intervention](http://image.intervention.io) is rather resource-intensive. As a consequence:
+- Apply [Intervention](http://image.intervention.io) carefully.
 - For large files (at the moment, 8 megapixels), the initial resize of an image is handled by Winter's internal resizer. At the moment, 
 this results in the original image being opened, resized, compressed, stored and then re-opened to apply any filers of the
-[http://image.intervention.io](Intervention) library before the final result is again compressed and saved to disk.
+[Intervention](http://image.intervention.io) library before the final result is again compressed and saved to disk.
 This approach results generally in faster processing but re-compresses images twice, which implies a (slight) loss of quality.
 
 Further optimisations are planned.
