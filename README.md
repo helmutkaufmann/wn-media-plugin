@@ -1,5 +1,5 @@
 # Winter CMS Media Plugin
-Improved media handling for Winter CMS, including:
+Improved media handling for [WinterCMS](https://wintercms.com), including:
 - Winter CMS image resizer replacement: Rendering modern image formats where they can be displayed by the browsers.
 - Advanced image manipulation using the [Intervention](http://image.intervention.io) library.
 
@@ -32,7 +32,7 @@ option called *manipulation*. Multiple filters can be daisy-changed as per the f
 ```
 {{ image | iresize(150, 100, { manipulation: "blur(1)->colorize(-100, 0, 0)->flip('v')" }}
 ```
-This example would first resize the image to 150x100px, add a 1% blur filter to off take all red out of the image
+This example would first resize the image to 150x100px, add a 1% blur filter, remove all red from the image
 and finally flip it vertically.
 
 While [Intervention](http://image.intervention.io) holds the current description of all available functions,
@@ -90,7 +90,7 @@ in particular *mode, offset* and *sharpen*. Implementation will follow in the ve
 
 ## A word of caution
 [Intervention](http://image.intervention.io) is rather resource-intensive. As a consequence:
-- Apply [Intervention](http://image.intervention.io) carefully.
+- Apply [Intervention](http://image.intervention.io) filters carefully.
 - For large files (at the moment, 8 megapixels), the initial resize of an image is handled by Winter's internal resizer. At the moment, 
 this results in the original image being opened, resized, compressed, stored and then re-opened to apply any filers of the
 [Intervention](http://image.intervention.io) library before the final result is again compressed and saved to disk.
