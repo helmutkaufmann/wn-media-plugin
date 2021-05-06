@@ -84,8 +84,8 @@ harpen current image with an optional amount. Use values between 0 and 100. Defa
 [http://image.intervention.io](Intervention) is rather resource-intensive. As a consequence:
 - Apply [http://image.intervention.io](Intervention) carefully.
 - The initial resize of an image is handled by Winter's internal resizer. At the moment, this results the original 
-image being opened, resized, compressed, stored and then re-openedto apply any filers of the
+image being opened, resized, compressed, stored and then re-opened to apply any filers of the
 [http://image.intervention.io](Intervention) library before the final result is again compressed and saved to disk.
 This approach results generally in faster processing but re-compresses images twice, which implies a (slight) loss of quality.
 
-Further optimizations are planned.
+Further optimisations are planned.
