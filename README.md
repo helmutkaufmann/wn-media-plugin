@@ -23,7 +23,7 @@ git clone git@github.com:helmutkaufmann/wn-media-plugin.git
 Replacement for the Twig built-in resize function. If no *extension* option is specified, 
 it will return the image in *webp* format if the browser is able to process it.
 ```
-{{ image | iresize }}
+{{ image | iresize(150, 100)}}
 ```
 
 The filter supports Winter's *filter* options, please, see the respective documentation.
