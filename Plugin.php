@@ -157,9 +157,7 @@ class Plugin extends PluginBase
     {
         return [
             'filters' => [
-                'iresize' =>  [MediaExtensions::class, 'resize'],
-                'ngresize' =>  [MediaExtensions::class, 'resize'],
-                
+                'iresize' =>  [MediaExtensions::class, 'resize'],                
             ],
             'functions' => [],
         ];
