@@ -1,6 +1,7 @@
 # Winter CMS Media Plugin
-Improved media handling for Winter CMS. In particular, a Winter CMS image resizer replacement, 
-providing next generation image formats where they can be displayed by the requester's browsers.
+Improved media handling for Winter CMS, including:
+- a Winter CMS image resizer replacement, providing modern image formats where they can be displayed by the browsers,
+- image manipulation using [http://image.intervention.io](Intervention).
 
 ## Installation
 #### composer
