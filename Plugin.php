@@ -23,7 +23,7 @@ class Plugin extends PluginBase
     {
         return [
             'name'        => 'Media',
-            'description' => 'Media Processing Plugin for Winter CMS. Based in parts around Next Generation Media by Marc Jauvin.',
+            'description' => 'Media Processing Plugin for Winter CMS, replacing resize and introducing advanced image filter capabilities based on the Intervention library.',
             'author'      => 'Helmut Kaufmann',
             'icon'        => 'icon-leaf'
         ];
