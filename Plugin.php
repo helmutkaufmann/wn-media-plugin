@@ -7,6 +7,7 @@ use Request;
 use System\Classes\PluginBase;
 use Mercator\Media\Classes\MediaExtensions;
 use Intervention\Image\ImageManagerStatic as Image;
+use Winter\Storm\Database\Attach\Resizer as DefaultResizer;
 
 /**
  *  Media Plugin Information File
@@ -63,10 +64,25 @@ class Plugin extends PluginBase
             $newPath = $base . '.' . array_get($options, 'extension', $ext);
 			
 			if ($manipulation) {
-
-				\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($tempPath, 100);
-				$image = Image::make($tempPath);
-				// $image = Image::make($tempPath)->resize($width, $height);
+				
+				$size = getimagesize($tempPath);
+                $dimensions['width'] = $size[0];
+                $dimensions['height'] = $size[1];
+				
+				// Resize large images with the default resizer (>8 megapixels)
+				if (($dimensions["width"] * $dimensions["height"]) > (8*1024*1024)) {
+ 
+					$winterOptions = $options;
+					$winterOptions["quality"]=100;
+				
+					\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $winterOptions)->save($tempPath);
+					$image = Image::make($tempPath);
+				
+				}
+				else {
+					$image = Image::make($tempPath)->resize ($width, $height);
+				}
+				
 				$image=eval("{ return \$image->" . $manipulation . "; }");
 				$image->save($newPath, $options["quality"], $options["extension"]); 
 				
@@ -142,6 +158,7 @@ class Plugin extends PluginBase
         return [
             'filters' => [
                 'iresize' =>  [MediaExtensions::class, 'resize'],
+                'ngresize' =>  [MediaExtensions::class, 'resize'],
                 
             ],
             'functions' => [],
