@@ -8,8 +8,6 @@ use System\Classes\PluginBase;
 use Mercator\Media\Classes\MediaExtensions;
 use Intervention\Image\ImageManagerStatic as Image;
 
-
-
 /**
  *  Media Plugin Information File
  */
@@ -53,30 +51,30 @@ class Plugin extends PluginBase
     	
         Event::listen('system.resizer.processResize', function ($resizer, $tempPath) { 	
         	
-            // Get the resizing configuration
+            // Get the configuration options the user has sumitted 
             $config = $resizer->getConfig();
             $options = array_get($config, 'options', []);
+            $width=$config['width'];
+            $height=$config['height'];
+            $quality=$options["quality"];
+            $manipulation = array_get($config['options'], 'manipulation', null);
 
             list($base, $ext) = explode('.', $tempPath);
             $newPath = $base . '.' . array_get($options, 'extension', $ext);
-
-			$manipulation = array_get($config['options'], 'manipulation', false);
 			
 			if ($manipulation) {
 
-				$image = Image::make($tempPath)->resize($config['width'], $config['height']);
+				$image = Image::make($tempPath)->resize($width, $height);
 				$image=eval("{ return \$image->" . $manipulation . "; }");
-				$image->save($newPath, $options["quality"], $options["extension"]);
-					   
+				$image->save($newPath, $options["quality"], $options["extension"]);   
 				
 			} else {
 				
-				//
 				// Use built-in resizer as Intervention is slow
-				//
-				\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($config['width'], $config['height'], $options)->save($newPath);
+				\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($newPath, $quality);
                 
-                // Image::make($tempPath)->resize($config['width'], $config['height'])->save($newPath, $options["quality"], $options["manipulation"]);
+                // And not 
+                // Image::make($tempPath)->resize($width, $height)->save($newPath, $quality);
                 
 			}
 
@@ -143,7 +141,7 @@ class Plugin extends PluginBase
             'filters' => [
                 'ngresize' =>  [MediaExtensions::class, 'resize'],
                 'iresize' =>  [MediaExtensions::class, 'resize'],
-                'resize' =>  [MediaExtensions::class, 'resize'],
+                
             ],
             'functions' => [
                 'acceptsFormat' => [MediaExtensions::class, 'acceptsFormat'], 
