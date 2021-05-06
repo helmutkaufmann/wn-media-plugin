@@ -73,6 +73,7 @@ class Plugin extends PluginBase
 				if (($dimensions["width"] * $dimensions["height"]) > (8*1024*1024)) {
  
 					$winterOptions = $options;
+					$winterOptions["extension"]='tiff';
 					$winterOptions["quality"]=100;
 				
 					\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $winterOptions)->save($tempPath);
