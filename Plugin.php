@@ -64,9 +64,11 @@ class Plugin extends PluginBase
 			
 			if ($manipulation) {
 
-				$image = Image::make($tempPath)->resize($width, $height);
+				\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($tempPath, 100);
+				$image = Image::make($tempPath);
+				// $image = Image::make($tempPath)->resize($width, $height);
 				$image=eval("{ return \$image->" . $manipulation . "; }");
-				$image->save($newPath, $options["quality"], $options["extension"]);   
+				$image->save($newPath, $options["quality"], $options["extension"]); 
 				
 			} else {
 				

@@ -80,24 +80,12 @@ efault: #ffffff, transparent if supported by the output format
 ##### sharpen([amount])
 harpen current image with an optional amount. Use values between 0 and 100. Default: 10.
 
-## Twig Functions
-### acceptsFormat
-Tests if a browser is able to render a specific image format. It takes *jpg, jpeg, gif, web, avif* and *png* 
-as parameters and returns *true* or *false*. 
-
-```
-{% if acceptsFormat('avif') %}
-    <h1>Your browser supports <i>avif</i> file type</h1>
-{% endif %}
-
-{% if acceptsFormat('webp') %}
-    <h1>Your browser supports <i>webp</i> file type</h1>
-{% endif %}
-<h1>Hello There!</h1>
-```
-Note that this functionality is also included in [https://github.com/mjauvin/wn-ngmedia-plugin](Next Generation Media)
-and is likely to be excluded in a future version of the plugin.
-
 ## A word of caution
-[http://image.intervention.io](Intervention) is rather resource-intensive. It is therefore advised to apply filters
-with caution. Further optimisation is planned for.
+[http://image.intervention.io](Intervention) is rather resource-intensive. As a consequence:
+- Apply [http://image.intervention.io](Intervention) carefully.
+- The initial resize of an image is handled by Winter's internal resizer. At the moment, this results the original 
+image being opened, resized, compressed, stored and then re-openedto apply any filers of the
+[http://image.intervention.io](Intervention) library before the final result is again compressed and saved to disk.
+This approach results generally in faster processing but re-compresses images twice, which implies a (slight) loss of quality.
+
+Further optimizations are planned.
