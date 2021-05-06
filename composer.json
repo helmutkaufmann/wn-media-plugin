@@ -1,8 +1,8 @@
 {
     "name": "mercator/wn-media-plugin",
     "type": "winter-plugin",
-    "description": "Improved media handling for Winter CMS. In particular, a Winter CMS image resizer replacement, providing next generation image formats where they can be displayed by the requester's browsers.",
-    "keywords": ["winter", "wintercms", "laravel", "image", "next generation", "NG", "webp", "resize", "resizer", "extension", "plugin", "php"],
+    "description": "Improved media handling for Winter CMS, including (i) a WinterCMS image resizer replacement that renders modern image formats where they can be displayed by the browsers; (2) an advanced image manipulation using the Intervention library.",
+    "keywords": ["winter", "wintercms", "laravel", "image", "iresize", "repalcement" ,"Intervention", "webp", "resize", "resizer", "extension", "plugin", "php"],
     "license": "MIT",
     "authors": [
         {
@@ -16,6 +16,5 @@
         "composer/installers": "~1.0",
         "intervention/image": "^2.5",
         "intervention/imagecache": "^2.5"
-
     }
 }

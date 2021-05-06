@@ -4,7 +4,7 @@ Improved media handling for Winter CMS, including:
 - Advanced image manipulation using the [Intervention](http://image.intervention.io) library.
 
 Note that this is a pre-production version of the plugin to demonstrate capabilities and should nto be used in a
-production library. To see it in action, go to the galleries [mercator dot li](https://mercator.li).
+production library. To see it in action, see the galleries on [mercator dot li](https://mercator.li).
 
 ## Installation
 #### composer
