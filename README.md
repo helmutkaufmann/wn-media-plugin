@@ -50,7 +50,7 @@ and -100 to take out all the certain color on the image.
 Mirror the current image horizontally or vertically by specifying the mode.
 Specify the mode the image will be flipped. You can set "h" for horizontal (default) or "v" for vertical flip.
 
-##### gamma(value)
+##### gamma(correction)
 Performs a gamma correction operation on the current image.
 
 ##### greyscale()
@@ -63,7 +63,7 @@ Reverses all colors of the current image.
 Method converts the existing colors of the current image into a color table with a given maximum count of colors. 
 The function preserves as much alpha channel information as possible and blends transarent pixels against a optional matte color.
 
-##### opacity()
+##### opacity(transparency)
 Set the opacity in percent of the current image ranging from 100% for opaque and 0% for full transparency.
 
 Note: Performance intensive on larger images. Use with care.
