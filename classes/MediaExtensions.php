@@ -15,7 +15,7 @@ class MediaExtensions extends \Backend\Classes\Controller
         'imageTypes' => [
             'image/webp' => [
                 'extension' => 'webp',
-                'quality' => 75,
+                'quality' => 50,
             ],
             'image/jpeg' => [
                 'extension' => 'jpg',
@@ -65,8 +65,8 @@ class MediaExtensions extends \Backend\Classes\Controller
         
             if (static::acceptsFormat($type)) {
             
-                ($ext = array_get($typeOptions, 'extension')) or die();
-                ($quality = array_get($typeOptions, 'quality')) or die();
+                ($ext = array_get($typeOptions, 'extension'));
+                ($quality = array_get($typeOptions, 'quality'));
                 $publicPath = File::localToPublic($path);
                 $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$ext, 'quality'=>$quality, 'manipulation' => $manipulation ]);
 				return $resizerPath;

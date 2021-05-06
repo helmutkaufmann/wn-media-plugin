@@ -139,14 +139,10 @@ class Plugin extends PluginBase
     {
         return [
             'filters' => [
-                'ngresize' =>  [MediaExtensions::class, 'resize'],
                 'iresize' =>  [MediaExtensions::class, 'resize'],
                 
             ],
-            'functions' => [
-                'acceptsFormat' => [MediaExtensions::class, 'acceptsFormat'], 
-                
-            ],
+            'functions' => [],
         ];
     }
 }
