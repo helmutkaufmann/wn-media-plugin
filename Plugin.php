@@ -138,6 +138,14 @@ class Plugin extends PluginBase
 							case 'heighten':
 								$image=$image->heighten($arguments[1]);
 								break;
+							
+							/* Not working - review needed
+								
+							case 'invert':
+								$image=$image->invert();
+								break;
+								
+							*/
 								
 							case 'limitColors':
 								$image=$image->limitColors($arguments[1], isset($arguments[2]) ? $arguments[2]: null);
@@ -162,6 +170,8 @@ class Plugin extends PluginBase
 							case 'widen':
 								$image=$image->widen($arguments[1]);
 								break;
+								
+							default:
 						}
 					
 					}

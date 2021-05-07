@@ -89,9 +89,6 @@ Turns image into a greyscale version.
 ##### heighten(height)
 Resizes the current image to new height, constraining aspect ratio. 
 
-##### invert()
-Reverses all colors of the current image.
-
 ##### limitColors(count, [matte=null])
 Method converts the existing colors of the current image into a color table with a given maximum count of colors. 
 The function preserves as much alpha channel information as possible and blends transarent pixels against a optional matte color.
