@@ -53,8 +53,8 @@ compression, the *quality* can be explicitly set.
 Consequence: If you specify an explicit *exentions*, 
 the browser might not be able to display it due to lack of functionality (e.g. webp images on certain Safari versions).
 
-The following [Intervention](http://image.intervention.io) filters are currently available. See 
-[Intervention](http://image.intervention.io) for additional information.
+The following [Intervention](http://image.intervention.io) filters are currently available. See the Intervention 
+[website](http://image.intervention.io) for additional information.
 
 ##### blur([amount = 1])
 Apply a gaussian blur filter with a optional amount on the current image. Use values between 0 and 100.
@@ -92,7 +92,7 @@ Resizes the current image to new height, constraining aspect ratio.
 ##### invert()
 Reverses all colors of the current image.
 
-##### limitColors(count, [matte])
+##### limitColors(count, [matte=null])
 Method converts the existing colors of the current image into a color table with a given maximum count of colors. 
 The function preserves as much alpha channel information as possible and blends transarent pixels against a optional matte color.
 
