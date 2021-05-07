@@ -123,7 +123,7 @@ with the value for that EXIF key. If no data is found, null is returned.
 
 Example
 ```
-exif("Model)
+exif("Model")
 ```
 returns the camera's model name if set.
 
@@ -132,8 +132,8 @@ Returns an array (key/value) of all IPTC meta data from image. Alternatively, if
 with the value for that IPTC key. If no data is found, null is returned.
 
 ## Limitations
-This is a production version of the plugin. Not all options of the original resize function have yet been implemented, 
-in particular *mode, offset* and *sharpen*. Implementation will follow in the very near future.
+This is a pre-production version of the plugin. Winter's original resize function has not been fully implemented, 
+in particular *mode*. Implementation will follow in the very near future.
 
 ## A word of caution
 [Intervention](http://image.intervention.io) is rather resource-intensive. As a consequence:
