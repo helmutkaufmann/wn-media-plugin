@@ -29,6 +29,7 @@ class Plugin extends PluginBase
             'name'        => 'Media',
             'description' => 'Media Processing Plugin for Winter CMS, replacing resize and introducing advanced image filter capabilities based on the Intervention library.',
             'author'      => 'Helmut Kaufmann',
+	    'homepage'    => 'htpps://mercator.li'
         ];
     }
 
@@ -88,7 +89,8 @@ class Plugin extends PluginBase
 				
 					if (($width+$height) > 0) 
 						\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $intermediateOptions)->save($tempPath);
-					$image = Image::make(imagecreatefromtiff($tempPath);
+					// $image = Image::make(imagecreatefromtiff($tempPath);
+					$image = Image::make($tempPath);
 				
 				} else {
 					if (($width+$height) > 0)
