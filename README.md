@@ -19,12 +19,26 @@ git clone git@github.com:helmutkaufmann/wn-media-plugin.git
 
 ## Twig Filters
 
-### iresize([width], [height], [filters], [extension], [quality]) 
-### ifilter([width], [height], [filters], [extension], [quality]) 
+### iresize([width=0], [height=0], [filters], [extension], [quality]) 
+### ifilter([width=0], [height=0], [filters], [extension], [quality]) 
 These identical filters resize images and apply filters to an image.
 
 If *width* and *height* are specified, the image is before applying any *filters*. 
-To keep the aspect ration of an image, set **either** *width* or *height* to *null*.
+To keep the aspect ration of an image, set **either** *width* or *height* to *zero (0)*. 
+
+Setting either *width* or *height* to *null* leaves this dimension untouched and results typically in a distored
+image. Examples:
+
+```
+iresize(300, null)
+```
+resize only the width of the image. Likewise
+
+```
+ifilter(null, 200);
+```
+resize only the height of the image
+
 
 The function can apply [Intervention](http://image.intervention.io) *filters* to the image. 
 Filters can be specified as a string, such as 
@@ -50,8 +64,8 @@ If the optional parameter *extension* is specified, the plugin will convert the 
 to the extension. Valid extensions are *jpg, gif, tiff* and *webp*. If the respective image format supports
 compression, the *quality* can be explicitly set. 
 
-Consequence: If you specify an explicit *exentions*, 
-the browser might not be able to display it due to lack of functionality (e.g. webp images on certain Safari versions).
+Consequence: If you specify an explicit *exentsion*, 
+the browser might not be able to display it due to lack of functionality (e.g. *webp* images on certain Safari versions).
 
 The following [Intervention](http://image.intervention.io) filters are currently available. See the Intervention 
 [website](http://image.intervention.io) for additional information.

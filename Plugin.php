@@ -8,6 +8,7 @@ use System\Classes\PluginBase;
 use Mercator\Media\Classes\MediaExtensions;
 use Intervention\Image\ImageManagerStatic as Image;
 use Winter\Storm\Database\Attach\Resizer as DefaultResizer;
+use System\Models\EventLog as EventLog;
 
 /**
  *  Media Plugin Information File
@@ -25,7 +26,6 @@ class Plugin extends PluginBase
             'name'        => 'Media',
             'description' => 'Media Processing Plugin for Winter CMS, replacing resize and introducing advanced image filter capabilities based on the Intervention library.',
             'author'      => 'Helmut Kaufmann',
-            'icon'        => 'icon-leaf'
         ];
     }
 
@@ -79,12 +79,12 @@ class Plugin extends PluginBase
 				// Resize large images with the default resizer (>8 megapixels)
 				if (($dimensions["width"] * $dimensions["height"]) > (8*1024*1024)) {
  
-					$winterOptions = $options;
-					$winterOptions["extension"]='tiff';
-					$winterOptions["quality"]=100;
+					$intermediateOptions = $options;
+					$intermediateOptions["extension"] = 'tiff';
+					$intermediateOptions["quality"] = 100;
 				
 					if (($width+$height) > 0) 
-						\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $winterOptions)->save($tempPath);
+						\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $intermediateOptions)->save($tempPath);
 					$image = Image::make($tempPath);
 				
 				} else {
@@ -156,7 +156,7 @@ class Plugin extends PluginBase
 								break;	
 							
 							case 'resize':
-								$image=$image->resize($arguments[1], $arguments[2]);
+								$image=$image->resize($arguments[1], isset($arguments[2]) ? $arguments[2]: null);
 								break;
 							
 							case 'rotate':
@@ -172,6 +172,7 @@ class Plugin extends PluginBase
 								break;
 								
 							default:
+								EventLog::add("iresize / ifilter: Detected and ignored unknown filter called " . $arguments[0] . ". See " . __FILE__ );
 						}
 					
 					}
@@ -180,13 +181,14 @@ class Plugin extends PluginBase
 				}
 				$image->save($newPath, $options["quality"], $options["extension"]); 		
 				
-			} else {
+			} 
+			else { 
 				
-				// Use built-in resizer as Intervention is slow
+				// There are no filters to apply... use built-in resizer 
 				if (($width+$height) > 0)
 					\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($newPath, $quality);
                 
-                // And not 
+                // Note: Do not use the Intervention resizer as it is not very speedy
                 // Image::make($tempPath)->resize($width, $height)->save($newPath, $quality);
                 
 			}
@@ -194,6 +196,8 @@ class Plugin extends PluginBase
             if ($newPath != $tempPath) {
                 File::move($newPath, $tempPath);
             }
+            
+            
 
             // Prevent any other resizing replacer logic from running
             return true;
@@ -253,8 +257,8 @@ class Plugin extends PluginBase
     {
         return [
             'filters' => [
-                'iresize' =>  [MediaExtensions::class, 'resize'],  
-                'ifilter' =>  [MediaExtensions::class, 'resize']
+                'iresize' =>  [MediaExtensions::class, 'iresize'],  
+                'ifilter' =>  [MediaExtensions::class, 'iresize']
                             
             ],
             'functions' => [

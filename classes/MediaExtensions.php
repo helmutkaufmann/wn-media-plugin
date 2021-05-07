@@ -36,8 +36,9 @@ class MediaExtensions extends \Backend\Classes\Controller
 
         return in_array($type, $acceptableTypes) || in_array("image/$type", $acceptableTypes);
     }
-
-    public static function resize($image, $width=0, $height=0, $filters=[], $extension=null, $quality=null) 
+    
+    
+    public static function iresize($image, $width=null, $height=null, $filters=[], $extension=null, $quality=null) 
     {
         $path = public_path(parse_url($image, PHP_URL_PATH));
         if (!File::exists($path)) {
