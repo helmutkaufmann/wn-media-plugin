@@ -1,1 +1,2 @@
 0.9.001: Initial plugin version
+0.9.004: Added option to specify filters using Twig arrays. Added additional filters. Added EXIF and ITPC functions. Improved README.
