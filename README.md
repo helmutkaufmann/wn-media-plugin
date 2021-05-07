@@ -21,33 +21,40 @@ git clone git@github.com:helmutkaufmann/wn-media-plugin.git
 
 ### iresize([width], [height], [filters], [extension], [quality]) 
 ### ifilter([width], [height], [filters], [extension], [quality]) 
-Replacement for the Twig built-in resize function. 
+These identical filters resize images and apply filters to an image.
 
 If *width* and *height* are specified, the image is before applying any *filters*. 
 To keep the aspect ration of an image, set **either** *width* or *height* to *null*.
 
 The function can apply [Intervention](http://image.intervention.io) *filters* to the image. 
 Filters can be specified as a string, such as 
+
 ```
 {{ image | iresize(150, 100, "blur(1)->colorize(-100, 0, 0)->flip('v')" }}
 ```
-This example would first resize the image to 150x100px, add a 1% blur filter, remove all red from the image
-and finally flip it vertically.
 
-Alternatively, you can specify the filter as Twig array:
-``
+This example would first resize the image to 150x100px, add a 1% blur filter, remove all red from the image
+and finally flip the image vertically.
+
+Alternatively, you can specify the filters as a Twig array:
+
+```
 {{ image | iresize(150, 100, [["blur", 1],["colorize", -100, 0, 0], ["flip"]])
-``
+```
+
 Note that the *flip* filter was called without the optional parameter. In this case, the plugin honored the
 "v" as the default option.
 
 By default, the plugin will serve an optimal image format depending on the rendering capabilities of the browser.
 If the optional parameter *extension* is specified, the plugin will convert the image to  the image format corresponding
-to the extension. Valid extensions are *jpg, gif, tiff* and "*webp*. Note: If you specify an explicit *exentions*, the 
-browser might not be able to display it due to lack of functionality (e.g. webp images on certain Safari versions).
+to the extension. Valid extensions are *jpg, gif, tiff* and *webp*. If the respective image format supports
+compression, the *quality* can be explicitly set. 
 
-While [Intervention](http://image.intervention.io) holds the current description of all available functions,
-here are some of the probably most common ones:
+Consequence: If you specify an explicit *exentions*, 
+the browser might not be able to display it due to lack of functionality (e.g. webp images on certain Safari versions).
+
+The following [Intervention](http://image.intervention.io) filters are currently available. See 
+[Intervention](http://image.intervention.io) for additional information.
 
 ##### blur([amount = 1])
 Apply a gaussian blur filter with a optional amount on the current image. Use values between 0 and 100.
