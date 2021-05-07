@@ -38,6 +38,12 @@ class Plugin extends PluginBase
     {
 
     }
+    
+  	public function cv($v=null, $d=null) {
+    	
+    		return ( !empty($v) ? $v : $d);
+    			
+    }
 
     /**
      * Boot method, called right before the request route.
@@ -55,15 +61,16 @@ class Plugin extends PluginBase
             // Get the configuration options the user has sumitted 
             $config = $resizer->getConfig();
             $options = array_get($config, 'options', []);
+            
             $width=$config['width'];
             $height=$config['height'];
             $quality=$options["quality"];
-            $manipulation = array_get($config['options'], 'manipulation', null);
+            $filters  = array_get($config['options'], 'filters', null); 
 
             list($base, $ext) = explode('.', $tempPath);
             $newPath = $base . '.' . array_get($options, 'extension', $ext);
 			
-			if ($manipulation) {
+			if ($filters) {
 				
 				$size = getimagesize($tempPath);
                 $dimensions['width'] = $size[0];
@@ -76,21 +83,98 @@ class Plugin extends PluginBase
 					$winterOptions["extension"]='tiff';
 					$winterOptions["quality"]=100;
 				
-					\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $winterOptions)->save($tempPath);
+					if (($width+$height) > 0) 
+						\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $winterOptions)->save($tempPath);
 					$image = Image::make($tempPath);
 				
-				}
-				else {
-					$image = Image::make($tempPath)->resize ($width, $height);
+				} else {
+					if (($width+$height) > 0)
+						$image = Image::make($tempPath)->resize ($width, $height);
+					else
+						$image = Image::make($tempPath);
 				}
 				
-				$image=eval("{ return \$image->" . $manipulation . "; }");
-				$image->save($newPath, $options["quality"], $options["extension"]); 
+				if (is_array($filters)) {
+				
+					foreach ($filters as $filter) {
+				
+						$arguments=array_values($filter);
+						switch ($arguments[0]) {
+				
+							case 'blur': 
+								$image=$image->blur(isset($arguments[1]) ? $arguments[1]: 1);
+								break;
+							
+							case 'brightness':
+								$image=$image->brightness($arguments[1]);
+								break;
+							
+							case 'colorize':
+								$image=$image->colorize($arguments[1], $arguments[2], $arguments[3]);
+								break;
+								
+							case 'contrast':
+								$image=$image->heighten($arguments[1]);
+								break;
+						
+							case 'crop':
+								$image=$image->crop($arguments[1], $arguments[2], 
+												isset($arguments[3]) ? $arguments[3]: 0,
+												isset($arguments[4]) ? $arguments[4]: 0);
+								break;
+							
+							case 'flip':
+								$image=$image->flip(isset($arguments[1]) ? $arguments[1]: "v");
+								break;
+							
+							case 'gamma':
+								$image=$image->gamma($arguments[1]);
+								break;	
+							
+							case 'greyscale':
+								$image=$image->greyscale();
+								break;	
+								
+							case 'heighten':
+								$image=$image->heighten($arguments[1]);
+								break;
+								
+							case 'limitColors':
+								$image=$image->limitColors($arguments[1], isset($arguments[2]) ? $arguments[2]: null);
+								break;
+							
+							case 'opacity':
+								$image=$image->opacity($arguments[1]);
+								break;	
+							
+							case 'resize':
+								$image=$image->resize($arguments[1], $arguments[2]);
+								break;
+							
+							case 'rotate':
+								$image=$image->rotate($arguments[1]);
+								break;
+								
+							case 'sharpen':
+								$image=$image->sharpen(isset($arguments[1]) ? $arguments[1]: 10);
+								break;
+								
+							case 'widen':
+								$image=$image->widen($arguments[1]);
+								break;
+						}
+					
+					}
+				} else {
+					$image=eval("{ return \$image->" . $filters . "; }");
+				}
+				$image->save($newPath, $options["quality"], $options["extension"]); 		
 				
 			} else {
 				
 				// Use built-in resizer as Intervention is slow
-				\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($newPath, $quality);
+				if (($width+$height) > 0)
+					\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($newPath, $quality);
                 
                 // And not 
                 // Image::make($tempPath)->resize($width, $height)->save($newPath, $quality);
@@ -104,6 +188,7 @@ class Plugin extends PluginBase
             // Prevent any other resizing replacer logic from running
             return true;
         });
+        
         
         // 
         // Next extension step:
@@ -158,9 +243,14 @@ class Plugin extends PluginBase
     {
         return [
             'filters' => [
-                'iresize' =>  [MediaExtensions::class, 'resize'],                
+                'iresize' =>  [MediaExtensions::class, 'resize'],  
+                'ifilter' =>  [MediaExtensions::class, 'resize']
+                            
             ],
-            'functions' => [],
+            'functions' => [
+            	'exif' =>  [MediaExtensions::class, 'exif'], 
+                'iptc' =>  [MediaExtensions::class, 'iptc'],  
+            ],
         ];
     }
 }

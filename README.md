@@ -19,26 +19,37 @@ git clone git@github.com:helmutkaufmann/wn-media-plugin.git
 
 ## Twig Filters
 
-### iresize
-Replacement for the Twig built-in resize function. If no *extension* option is specified, 
-it will return the image in *webp* format if the browser is able to process it.
-```
-{{ image | iresize(150, 100)}}
-```
+### iresize([width], [height], [filters], [extension], [quality]) 
+### ifilter([width], [height], [filters], [extension], [quality]) 
+Replacement for the Twig built-in resize function. 
 
-The filter supports Winter's *filter* options, please, see the respective documentation.
-You can also use many (but not yet all) [Intervention](http://image.intervention.io) functions by specifying an 
-option called *manipulation*. Multiple filters can be daisy-changed as per the following example. 
+If *width* and *height* are specified, the image is before applying any *filters*. 
+To keep the aspect ration of an image, set **either** *width* or *height* to *null*.
+
+The function can apply [Intervention](http://image.intervention.io) *filters* to the image. 
+Filters can be specified as a string, such as 
 ```
-{{ image | iresize(150, 100, { manipulation: "blur(1)->colorize(-100, 0, 0)->flip('v')" }}
+{{ image | iresize(150, 100, "blur(1)->colorize(-100, 0, 0)->flip('v')" }}
 ```
 This example would first resize the image to 150x100px, add a 1% blur filter, remove all red from the image
 and finally flip it vertically.
 
+Alternatively, you can specify the filter as Twig array:
+``
+{{ image | iresize(150, 100, [["blur", 1],["colorize", -100, 0, 0], ["flip"]])
+``
+Note that the *flip* filter was called without the optional parameter. In this case, the plugin honored the
+"v" as the default option.
+
+By default, the plugin will serve an optimal image format depending on the rendering capabilities of the browser.
+If the optional parameter *extension* is specified, the plugin will convert the image to  the image format corresponding
+to the extension. Valid extensions are *jpg, gif, tiff* and "*webp*. Note: If you specify an explicit *exentions*, the 
+browser might not be able to display it due to lack of functionality (e.g. webp images on certain Safari versions).
+
 While [Intervention](http://image.intervention.io) holds the current description of all available functions,
 here are some of the probably most common ones:
 
-##### blur(amount = 1)
+##### blur([amount = 1])
 Apply a gaussian blur filter with a optional amount on the current image. Use values between 0 and 100.
 
 ##### brightness(amount)
@@ -50,7 +61,15 @@ Change the RGB color values of the current image on the given channels red, gree
 The input values are normalized so you have to include parameters from 100 for maximum color value 0 for no change 
 and -100 to take out all the certain color on the image.
 
-##### flip(mode)
+##### contrast (level)
+Changes the contrast of the current image by the given level. Use values between -100 for min. contrast 0 for no 
+change and +100 for max. contrast.
+
+##### crop(width, height, [x=0, y=0])
+Cut out a rectangular part of the current image with given width and height. Define optional x,y coordinates to 
+move the top-left corner of the cutout to a certain position.
+
+##### flip([mode="v"])
 Mirror the current image horizontally or vertically by specifying the mode.
 Specify the mode the image will be flipped. You can set "h" for horizontal (default) or "v" for vertical flip.
 
@@ -59,6 +78,9 @@ Performs a gamma correction operation on the current image.
 
 ##### greyscale()
 Turns image into a greyscale version.
+
+##### heighten(height)
+Resizes the current image to new height, constraining aspect ratio. 
 
 ##### invert()
 Reverses all colors of the current image.
@@ -72,7 +94,7 @@ Set the opacity in percent of the current image ranging from 100% for opaque and
 
 Note: Performance intensive on larger images. Use with care.
 
-##### rotate(angle, [background color])
+##### rotate(angle, [background color='#ffffff'])
 Rotate the current image counter-clockwise by a given angle. Optionally define a background color for the uncovered 
 zone after the rotation.
 
@@ -81,8 +103,26 @@ The rotation angle in degrees to rotate the image counter-clockwise.
 A background color for the uncovered zone after the rotation. The background color can be passed in different color formats. D
 efault: #ffffff, transparent if supported by the output format
 
-##### sharpen([amount])
+##### sharpen(amount=10)
 harpen current image with an optional amount. Use values between 0 and 100. Default: 10.
+
+##### widen(width)
+Resizes the current image to new width, constraining aspect ratio. 
+
+## Twig Functions
+### exif([key])
+Returns an array (key/value) of all EXIF meta data from image. Alternatively, if a *key* is set, it returns a string
+with the value for that EXIF key. If no data is found, null is returned.
+
+Example
+```
+exif("Model)
+```
+returns the camera's model name if set.
+
+### iptc([key])
+Returns an array (key/value) of all IPTC meta data from image. Alternatively, if a *key* is set, it returns a string
+with the value for that IPTC key. If no data is found, null is returned.
 
 ## Limitations
 This is a production version of the plugin. Not all options of the original resize function have yet been implemented, 

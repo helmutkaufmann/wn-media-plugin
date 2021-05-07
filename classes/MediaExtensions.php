@@ -3,6 +3,7 @@
 use File;
 use Request;
 use System\Classes\ImageResizer;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class MediaExtensions extends \Backend\Classes\Controller
 {
@@ -36,7 +37,7 @@ class MediaExtensions extends \Backend\Classes\Controller
         return in_array($type, $acceptableTypes) || in_array("image/$type", $acceptableTypes);
     }
 
-    public static function resize($image, $width, $height, $options=[]) 
+    public static function resize($image, $width=0, $height=0, $filters=[], $extension=null, $quality=null) 
     {
         $path = public_path(parse_url($image, PHP_URL_PATH));
         if (!File::exists($path)) {
@@ -45,35 +46,41 @@ class MediaExtensions extends \Backend\Classes\Controller
         
         list ($filename, $ext) = explode('.', $path);
         
-        $options = array_merge($options, static::$defaultOptions);
-        $manipulation = array_get($options, 'manipulation', null);
-        $quality = array_get($options, 'quality', null);
-
         // If the extension is set explicitly, honor it (even if the browser might not be able to handle it). 
-        if (array_get($options, 'extension', false)) {
+        if ($extension) {
             $publicPath = File::localToPublic($path);
-            if ($manipulation) {
-				$resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$ext, 'quality'=>$quality, 'manipulation' => $manipulation ]);
-			} else {
-				$resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$ext, 'quality'=>$quality]);
-			}
+            $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$extension, 'quality'=>$quality, 'filters' => $filters ]);
             return $resizerPath;
         }
 
      	// The user has not specified a format - provide the best available
-        foreach ($options['imageTypes'] as $type => $typeOptions) {
+        foreach (static::$defaultOptions['imageTypes'] as $type => $typeOptions) {
         
             if (static::acceptsFormat($type)) {
             
                 ($ext = array_get($typeOptions, 'extension'));
-                ($quality = array_get($typeOptions, 'quality'));
+                $quality = array_get($typeOptions, 'quality', 90);
                 $publicPath = File::localToPublic($path);
-                $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$ext, 'quality'=>$quality, 'manipulation' => $manipulation ]);
+                $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$ext, 'quality'=>$quality, 'filters' => $filters ]);
 				return $resizerPath;
                 
             }
         }
     }
-
-   
+    
+    public static function exif($image, $type=null) 
+    {
+		if (!$type)
+			return $data = Image::make(base_path(). $image)->exif();
+		else
+			return Image::make($image)->exif($type);
+    }
+    
+    public static function iptc($image, $type=null) 
+    {
+		if (!$type)
+			return $data = Image::make(base_path().$image)->iptc();
+		else
+			return Image::make($image)->iptc($type);
+    }
 }
