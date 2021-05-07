@@ -135,7 +135,7 @@ with the value for that IPTC key. If no data is found, null is returned.
 This is a pre-production version of the plugin. Winter's original resize function has not been fully implemented, 
 in particular *mode*. Implementation will follow in the very near future.
 
-## A word of caution
+## A word of caution / Next steps
 [Intervention](http://image.intervention.io) is rather resource-intensive. As a consequence:
 - Apply [Intervention](http://image.intervention.io) filters carefully.
 - For large files (at the moment, 8 megapixels), the initial resize of an image is handled by Winter's internal resizer. At the moment, 
@@ -143,4 +143,6 @@ this results in the original image being opened, resized, compressed, stored and
 [Intervention](http://image.intervention.io) library before the final result is again compressed and saved to disk.
 This approach results generally in faster processing but re-compresses images twice, which implies a (slight) loss of quality.
 
+Error handling must still be implemented, in particular failure to apply a filter, in particular when a filter is 
+incorrectly written (e.g. *blurs* instead of *blur*).
 Further optimisations are planned.
