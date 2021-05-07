@@ -10,6 +10,9 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Winter\Storm\Database\Attach\Resizer as DefaultResizer;
 use System\Models\EventLog as EventLog;
 
+// Use native resize method for larger images, e.g. above 8 megapixels
+define("NATIVE_RESIZE", (8*1024*1024));
+
 /**
  *  Media Plugin Information File
  */
@@ -77,7 +80,7 @@ class Plugin extends PluginBase
                 $dimensions['height'] = $size[1];
 				
 				// Resize large images with the default resizer (>8 megapixels)
-				if (($dimensions["width"] * $dimensions["height"]) > (8*1024*1024)) {
+				if (($dimensions["width"] * $dimensions["height"]) > NATIVE_RESIZE) {
  
 					$intermediateOptions = $options;
 					$intermediateOptions["extension"] = 'tiff';
@@ -85,7 +88,7 @@ class Plugin extends PluginBase
 				
 					if (($width+$height) > 0) 
 						\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $intermediateOptions)->save($tempPath);
-					$image = Image::make($tempPath);
+					$image = Image::make(imagecreatefromtiff($tempPath);
 				
 				} else {
 					if (($width+$height) > 0)
@@ -172,7 +175,7 @@ class Plugin extends PluginBase
 								break;
 								
 							default:
-								EventLog::add("iresize / ifilter: Detected and ignored unknown filter called " . $arguments[0] . ". See " . __FILE__ );
+								EventLog::add("iresize / ifilter: Detected and ignored unknown filter >>" . $arguments[0] . "<<. See " . __FILE__ );
 						}
 					
 					}
@@ -202,25 +205,6 @@ class Plugin extends PluginBase
             // Prevent any other resizing replacer logic from running
             return true;
         });
-        
-        
-        // 
-        // Next extension step:
-        // Listen to resizing events and set the default image format based on the browser's rendering capabilities
-        // At the moment, the only advanced media format is webp. This would optimize the behavior of the standard
-        // Twig resize function.
-        /*
-        Event::listen('system.resizer.getDefaultOptions', function (&$defaultOptions) {
-
-			if (MediaExtensions::acceptsFormat("webp")) {
-    			$defaultOptions['extension'] = 'webp';
-    		}
-    		else {
-    			$defaultOptions['extension'] = 'jpg';
-    		}
-    	
-		});
-        */
     }
 
     /**
