@@ -84,13 +84,15 @@ class Plugin extends PluginBase
 				if (($dimensions["width"] * $dimensions["height"]) > NATIVE_RESIZE) {
 
 					$intermediateOptions = $options;
-					$intermediateOptions["extension"] = 'tiff';
-					$intermediateOptions["quality"] = 100;
+					// $intermediateOptions["extension"] = 'tiff';
+					// $intermediateOptions["quality"] = 100;
 
 					if (($width+$height) > 0)
-						\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $intermediateOptions)->save($tempPath);
+						\Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $intermediateOptions)->save($newPath);
 					// $image = Image::make(imagecreatefromtiff($tempPath);
-					$image = Image::make($tempPath);
+					else
+						$newPath=$tempPath;
+					$image = Image::make($newPath);
 
 				} else {
 
@@ -145,13 +147,11 @@ class Plugin extends PluginBase
 								$image=$image->heighten($arguments[1]);
 								break;
 
-							/* Not working - review needed
+							/* Invert: Not working - review needed */
 
 							case 'invert':
 								$image=$image->invert();
 								break;
-
-							*/
 
 							case 'limitColors':
 								$image=$image->limitColors($arguments[1], isset($arguments[2]) ? $arguments[2]: null);
@@ -159,6 +159,10 @@ class Plugin extends PluginBase
 
 							case 'opacity':
 								$image=$image->opacity($arguments[1]);
+								break;
+
+							case 'pixelate':
+								$image=$image->pixelate($arguments[1]);
 								break;
 
 							case 'resize':
@@ -184,33 +188,33 @@ class Plugin extends PluginBase
 					}
 				} else {
 
-					if (strcmp($filters, "")) {
+					if (strcmp($filters, ""))
 						$image=eval("{ return \$image->" . $filters . "; }");
 
-					}
+
+				}
+
 				$image->save($newPath, $options["quality"], $options["extension"]);
 
-			}
 
-            if ($newPath != $tempPath) {
-                File::move($newPath, $tempPath);
-            }
         }
 
         else {
 
 				// There are no filters to apply... use built-in resizer
 				if (($width+$height) > 0) {
-				   \Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height)->save($tempPath, $quality);
+				   \Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height)->save($newPath, $quality);
 
                 // Note: Do not use the Intervention resizer as it is not very speedy
                 // Image::make($tempPath)->resize($width, $height)->save($newPath, $quality);
+                // $image->save($newPath, $options["quality"], $options["extension"]);
 
                 }
 
 		}
 
-
+		if ($newPath != $tempPath) 
+                File::move($newPath, $tempPath);
 
             // Prevent any other resizing replacer logic from running
             return true;
