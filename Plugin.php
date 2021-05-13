@@ -191,13 +191,17 @@ class Plugin extends PluginBase
 				$image->save($newPath, $options["quality"], $options["extension"]);
 
 			}
+
+            if ($newPath != $tempPath) {
+                File::move($newPath, $tempPath);
+            }
         }
 
         else {
 
 				// There are no filters to apply... use built-in resizer
 				if (($width+$height) > 0) {
-				   \Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height)->save($newPath, $quality);
+				   \Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height)->save($tempPath, $quality);
 
                 // Note: Do not use the Intervention resizer as it is not very speedy
                 // Image::make($tempPath)->resize($width, $height)->save($newPath, $quality);
@@ -206,9 +210,7 @@ class Plugin extends PluginBase
 
 		}
 
-            if ($newPath != $tempPath) {
-                File::move($newPath, $tempPath);
-            }
+
 
             // Prevent any other resizing replacer logic from running
             return true;
