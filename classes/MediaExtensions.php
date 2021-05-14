@@ -1,8 +1,10 @@
 <?php namespace Mercator\Media\Classes;
 
+
 use File;
 use Request;
 use System\Classes\ImageResizer;
+use System\Models\EventLog as EventLog;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class MediaExtensions extends \Backend\Classes\Controller
@@ -18,9 +20,21 @@ class MediaExtensions extends \Backend\Classes\Controller
                 'extension' => 'webp',
                 'quality' => 50,
             ],
-            'image/jpeg' => [
+            'image/jpg' => [
                 'extension' => 'jpg',
-                'quality' => 60,
+                'quality' => 70,
+            ],
+            'image/jpeg' => [
+                'extension' => 'jpeg',
+                'quality' => 70,
+            ],
+            'image/gif' => [
+                'extension' => 'gif',
+                'quality' => 90,
+            ],
+            'image/png' => [
+                'extension' => 'png',
+                'quality' => 90,
             ],
         ],
     ];
@@ -38,35 +52,36 @@ class MediaExtensions extends \Backend\Classes\Controller
     }
     
     
-    public static function iresize($image, $width=null, $height=null, $filters=[], $extension=null, $quality=null) 
+    public static function iresize($image, $width=null, $height=null, $filters=null, $extension=null, $quality=null) 
     {
+    	// Check if the file exists
         $path = public_path(parse_url($image, PHP_URL_PATH));
         if (!File::exists($path)) {
             return $image;
         }
         
-        list ($filename, $ext) = explode('.', $path);
-        
-        // If the extension is set explicitly, honor it (even if the browser might not be able to handle it). 
-        if ($extension) {
-            $publicPath = File::localToPublic($path);
-            $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$extension, 'quality'=>$quality, 'filters' => $filters ]);
-            return $resizerPath;
-        }
-
-     	// The user has not specified a format - provide the best available
+        // Uxtension must be all lower case
+        if ($extension)
+        	$extension = strtolower($extension);
+    
+     	// Use the explicitly spcifie format or provide the best available if no format has been specified
         foreach (static::$defaultOptions['imageTypes'] as $type => $typeOptions) {
         
-            if (static::acceptsFormat($type)) {
+        	$ext = array_get($typeOptions, 'extension');
+                
+            if (($extension && !strcmp($ext, $extension)) || (!$extension &&  static::acceptsFormat($type))) {
             
-                ($ext = array_get($typeOptions, 'extension'));
-                $quality = array_get($typeOptions, 'quality', 90);
+            	if (!$quality)
+            		$quality = array_get($typeOptions, 'quality', 90);
                 $publicPath = File::localToPublic($path);
-                $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension'=>$ext, 'quality'=>$quality, 'filters' => $filters ]);
+                $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension' => $ext, 'quality'=> $quality, 'filters' => $filters ]);
 				return $resizerPath;
                 
             }
         }
+        
+        EventLog::add("Could not resize image, unknown format $extension in " . __FILE__);
+        return $image;
     }
     
     public static function exif($image, $type=null) 

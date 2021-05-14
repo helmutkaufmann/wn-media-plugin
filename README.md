@@ -19,9 +19,9 @@ git clone git@github.com:helmutkaufmann/wn-media-plugin.git
 
 ## Twig Filters
 
-### iresize([width=0], [height=0], [filters], [extension], [quality]) 
+### iresize([width=null], [height=null], [filters=null], [extension=null], [quality=null]) 
 or
-### ifilter([width=0], [height=0], [filters], [extension], [quality]) 
+### ifilter([width=null], [height=null], [filters], [extension], [quality]) 
 These are identical filters to resize images and apply filters to them.
 
 If *width* and *height* are specified, the image is resized **before** applying any *filters*. This significantly
