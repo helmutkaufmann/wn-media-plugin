@@ -78,7 +78,7 @@ class Plugin extends PluginBase
                 if (($dimensions["width"] * $dimensions["height"]) > NATIVE_RESIZE)
                 {
 
-                    EventLog::add("iresize / ifilter: Native Resize " . __FILE__);
+                    // EventLog::add("iresize / ifilter: Native Resize " . __FILE__);
 
                     if (!$filters)
                     { // End here if there are no filters to apply
