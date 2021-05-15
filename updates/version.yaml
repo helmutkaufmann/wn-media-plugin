@@ -4,3 +4,4 @@
 0.9.006: General improvements.
 0.9.007: Bug fixes.
 0.9.008: Optimized speed.
+0.9.009: Check for updated source image and re-generate the resized one if teh image has changed.
