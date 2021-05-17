@@ -81,13 +81,16 @@ class Plugin extends PluginBase
                     // EventLog::add("iresize / ifilter: Native Resize " . __FILE__);
 
                     if (!$filters)
-                    { // End here if there are no filters to apply
+                    {  // End here if there are no filters to apply
                         \Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($newPath);
-                        if ($newPath != $tempPath) File::move($newPath, $tempPath);
+                        if ($newPath != $tempPath) 
+                        	File::move($newPath, $tempPath);
+                        
+    					// Prevent any other resizing replacer logic from running
                         return true;
                     }
                     else
-                    { // Save as JPG with 100% quality to limit quality deterioration
+                    {   // Save as JPG with 100% quality to limit quality deterioration
                         $intermediateOptions = $options;
                         $intermediateOptions["extension"] = 'jpg';
                         $intermediateOptions["quality"] = 100;
@@ -101,8 +104,11 @@ class Plugin extends PluginBase
                     if (!$filters)
                     { // End here if there are no filters to apply
                         $image = Image::make($tempPath)->resize($width, $height)->save($newPath, $quality, $extension);
-                        if ($newPath != $tempPath) File::move($newPath, $tempPath);
-                        return 0;
+                        if ($newPath != $tempPath) 
+                        	File::move($newPath, $tempPath);
+                        	
+                        	// Prevent any other resizing replacer logic from running
+                        	return true;
                     }
                     else 
                     {
@@ -205,7 +211,8 @@ class Plugin extends PluginBase
             elseif (strcmp($filters, "")) $image = eval("{ return \$image->" . $filters . "; }");
 
             $image->save($newPath, $quality, $extension);
-            if ($newPath != $tempPath) File::move($newPath, $tempPath);
+            if ($newPath != $tempPath) 
+            	File::move($newPath, $tempPath);
 
             // Prevent any other resizing replacer logic from running
             return true;

@@ -79,11 +79,15 @@ class MediaExtensions extends \Backend\Classes\Controller
                 $url = urldecode(urldecode($resizerPath));
                 $resizedImagePath = base_path(substr($url, strpos($url, "//")));
                 
+                /*
+                
                 if (is_file($resizedImagePath) && ( filectime($resizedImagePath) < filectime(base_path() . $image))) {
                 	// The image is newer than the resiuzed one, unlink the resized, so it gets re-generated.
                 	// EventLog::add("isresize - Resized image removed as there is a new original in " . __FILE__);
                 	unlink($resizedImagePath);
                 }
+                
+                */
                 
 				return $resizerPath;
                 
