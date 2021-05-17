@@ -7,6 +7,7 @@ Improved media handling for [WinterCMS](https://wintercms.com), including:
 #### composer
 ```
 composer require mercator/wn-media-plugin
+php artisan winter:up
 ```
 
 #### github
