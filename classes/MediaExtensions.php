@@ -22,19 +22,19 @@ class MediaExtensions extends \Backend\Classes\Controller
             ],
             'image/jpg' => [
                 'extension' => 'jpg',
-                'quality' => 70,
+                'quality' => 60,
             ],
             'image/jpeg' => [
                 'extension' => 'jpeg',
-                'quality' => 70,
+                'quality' => 60,
             ],
             'image/gif' => [
                 'extension' => 'gif',
-                'quality' => 90,
+                'quality' => 80,
             ],
             'image/png' => [
                 'extension' => 'png',
-                'quality' => 90,
+                'quality' => 80,
             ],
         ],
     ];

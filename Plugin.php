@@ -44,15 +44,15 @@ class Plugin extends PluginBase
      * @return array
      */
     public function boot()
-    {
-
+    {              
         Image::configure(array(
             'driver' => 'imagick'
         ));
-
+       
         Event::listen('system.resizer.processResize', function ($resizer, $tempPath)
         {
 
+			EventLog::add("TEMP PATH: $tempPath");
             // Get the configuration options the user has sumitted
             $config = $resizer->getConfig();
             $options = array_get($config, 'options', []);
@@ -218,7 +218,10 @@ class Plugin extends PluginBase
             return true;
 
         });
-    }
+        
+    } 
+         
+        
 
     /**
      * Registers any front-end components implemented in this plugin.
