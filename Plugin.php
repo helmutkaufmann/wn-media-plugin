@@ -44,15 +44,14 @@ class Plugin extends PluginBase
      * @return array
      */
     public function boot()
-    {              
+    {
         Image::configure(array(
             'driver' => 'imagick'
         ));
-       
+
         Event::listen('system.resizer.processResize', function ($resizer, $tempPath)
         {
 
-			EventLog::add("TEMP PATH: $tempPath");
             // Get the configuration options the user has sumitted
             $config = $resizer->getConfig();
             $options = array_get($config, 'options', []);
@@ -83,9 +82,9 @@ class Plugin extends PluginBase
                     if (!$filters)
                     {  // End here if there are no filters to apply
                         \Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($newPath);
-                        if ($newPath != $tempPath) 
-                        	File::move($newPath, $tempPath);
-                        
+                        if ($newPath != $tempPath)
+                          File::move($newPath, $tempPath);
+
     					// Prevent any other resizing replacer logic from running
                         return true;
                     }
@@ -104,13 +103,13 @@ class Plugin extends PluginBase
                     if (!$filters)
                     { // End here if there are no filters to apply
                         $image = Image::make($tempPath)->resize($width, $height)->save($newPath, $quality, $extension);
-                        if ($newPath != $tempPath) 
+                        if ($newPath != $tempPath)
                         	File::move($newPath, $tempPath);
-                        	
+
                         	// Prevent any other resizing replacer logic from running
                         	return true;
                     }
-                    else 
+                    else
                     {
                     	// Resize
                     	$image = Image::make($tempPath)->resize($width, $height);
@@ -167,11 +166,11 @@ class Plugin extends PluginBase
                         break;
 
                             /* Not working - review needed
-                            
+
                             case 'invert':
                             $image=$image->invert();
                             break;
-                            
+
                             */
 
                         case 'limitColors':
@@ -211,17 +210,17 @@ class Plugin extends PluginBase
             elseif (strcmp($filters, "")) $image = eval("{ return \$image->" . $filters . "; }");
 
             $image->save($newPath, $quality, $extension);
-            if ($newPath != $tempPath) 
+            if ($newPath != $tempPath)
             	File::move($newPath, $tempPath);
 
             // Prevent any other resizing replacer logic from running
             return true;
 
         });
-        
-    } 
-         
-        
+
+    }
+
+
 
     /**
      * Registers any front-end components implemented in this plugin.
@@ -231,7 +230,7 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return []; // Remove this line to activate
-        
+
     }
 
     /**
@@ -242,7 +241,7 @@ class Plugin extends PluginBase
     public function registerPermissions()
     {
         return []; // Remove this line to activate
-        
+
     }
 
     /**
@@ -253,13 +252,14 @@ class Plugin extends PluginBase
     public function registerNavigation()
     {
         return []; // Remove this line to activate
-        
+
     }
 
     public function registerMarkupTags()
     {
-        return ['filters' => ['iresize' => [MediaExtensions::class , 'iresize'], 'ifilter' => [MediaExtensions::class , 'iresize']
-
-        ], 'functions' => ['exif' => [MediaExtensions::class , 'exif'], 'iptc' => [MediaExtensions::class , 'iptc'], ], ];
+        return [
+          'filters' => ['iresize' => [MediaExtensions::class , 'iresize'], 'ifilter' => [MediaExtensions::class , 'iresize'], ],
+          'functions' => ['exif' => [MediaExtensions::class , 'exif'], 'iptc' => [MediaExtensions::class , 'iptc'], ]
+        ];
     }
 }

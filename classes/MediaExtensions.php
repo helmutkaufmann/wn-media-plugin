@@ -18,15 +18,15 @@ class MediaExtensions extends \Backend\Classes\Controller
         'imageTypes' => [
             'image/webp' => [
                 'extension' => 'webp',
-                'quality' => 50,
+                'quality' => 60,
             ],
             'image/jpg' => [
                 'extension' => 'jpg',
-                'quality' => 60,
+                'quality' => 70,
             ],
             'image/jpeg' => [
                 'extension' => 'jpeg',
-                'quality' => 60,
+                'quality' => 70,
             ],
             'image/gif' => [
                 'extension' => 'gif',
@@ -50,63 +50,63 @@ class MediaExtensions extends \Backend\Classes\Controller
 
         return in_array($type, $acceptableTypes) || in_array("image/$type", $acceptableTypes);
     }
-    
-    
-    public static function iresize($image, $width=null, $height=null, $filters=null, $extension=null, $quality=null) 
+
+
+    public static function iresize($image, $width=null, $height=null, $filters=null, $extension=null, $quality=null)
     {
     	// Check if the file exists
         $path = public_path(parse_url($image, PHP_URL_PATH));
         if (!File::exists($path)) {
             return $image;
         }
-        
+
         // Uxtension must be all lower case
         if ($extension)
         	$extension = strtolower($extension);
-    
+
      	// Use the explicitly spcifie format or provide the best available if no format has been specified
         foreach (static::$defaultOptions['imageTypes'] as $type => $typeOptions) {
-        
+
         	$ext = array_get($typeOptions, 'extension');
-                
+
             if (($extension && !strcmp($ext, $extension)) || (!$extension &&  static::acceptsFormat($type))) {
-            
+
             	if (!$quality)
             		$quality = array_get($typeOptions, 'quality', 90);
                 $publicPath = File::localToPublic($path);
                 $resizerPath = ImageResizer::filterGetUrl($publicPath, $width, $height, ['extension' => $ext, 'quality'=> $quality, 'filters' => $filters ]);
-                
+
                 $url = urldecode(urldecode($resizerPath));
                 $resizedImagePath = base_path(substr($url, strpos($url, "//")));
-                
+
                 /*
-                
+
                 if (is_file($resizedImagePath) && ( filectime($resizedImagePath) < filectime(base_path() . $image))) {
                 	// The image is newer than the resiuzed one, unlink the resized, so it gets re-generated.
                 	// EventLog::add("isresize - Resized image removed as there is a new original in " . __FILE__);
                 	unlink($resizedImagePath);
                 }
-                
+
                 */
-                
+
 				return $resizerPath;
-                
+
             }
         }
-        
+
         EventLog::add("Could not resize image, unknown format $extension in " . __FILE__);
         return $image;
     }
-    
-    public static function exif($image, $type=null) 
+
+    public static function exif($image, $type=null)
     {
 		if (!$type)
 			return $data = Image::make(base_path(). $image)->exif();
 		else
 			return Image::make($image)->exif($type);
     }
-    
-    public static function iptc($image, $type=null) 
+
+    public static function iptc($image, $type=null)
     {
 		if (!$type)
 			return $data = Image::make(base_path().$image)->iptc();
