@@ -15,5 +15,10 @@
         "php": ">=7.0",
         "composer/installers": "~1.0",
         "intervention/image": "^2.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": false
+        }
     }
 }

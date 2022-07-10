@@ -5,13 +5,13 @@ use Event;
 use File;
 use Request;
 use System\Classes\PluginBase;
-use Mercator\Media\Classes\MediaExtensions;
-use Intervention\Image\ImageManagerStatic as Image;
-use Winter\Storm\Database\Attach\Resizer as DefaultResizer;
 use System\Models\EventLog as EventLog;
+use Winter\Storm\Database\Attach\Resizer as DefaultResizer;
+use Intervention\Image\ImageManagerStatic as Image;
+use Mercator\Media\Classes\MediaExtensions;
 
 // Use native resize method for larger images, e.g. above 8 megapixels
-define("NATIVE_RESIZE", (2 * 1024 * 1024));
+define("NATIVE_RESIZE", (8 * 1024 * 1024));
 
 /**
  *  Media Plugin Information File
@@ -25,7 +25,10 @@ class Plugin extends PluginBase
      */
     public function pluginDetails()
     {
-        return ['name' => 'Media', 'description' => 'Media Processing Plugin for Winter CMS, replacing resize and introducing advanced image filter capabilities based on the Intervention library.', 'author' => 'Helmut Kaufmann', 'homepage' => 'htpps://mercator.li'];
+        return ['name' => 'Media',
+                'author' => 'Helmut Kaufmann',
+                'homepage' => 'htpps://mercator.li'
+                'description' => 'Image/Media Processing Plugin for Winter CMS, replacing resize and introducing advanced image filter capabilities based on the Intervention library.'];
     }
 
     /**
@@ -72,15 +75,14 @@ class Plugin extends PluginBase
             // Resize
             if (($width + $height) > 0)
             {
-
                 // Resize large images with the default resizer (>8 megapixels)
                 if (($dimensions["width"] * $dimensions["height"]) > NATIVE_RESIZE)
                 {
-
                     // EventLog::add("iresize / ifilter: Native Resize " . __FILE__);
 
                     if (!$filters)
-                    {  // End here if there are no filters to apply
+                    {
+                        // End here if there are no filters to apply
                         \Winter\Storm\Database\Attach\Resizer::open($tempPath)->resize($width, $height, $options)->save($newPath);
                         if ($newPath != $tempPath)
                           File::move($newPath, $tempPath);
@@ -89,7 +91,8 @@ class Plugin extends PluginBase
                         return true;
                     }
                     else
-                    {   // Save as JPG with 100% quality to limit quality deterioration
+                    {
+                        // Save as JPG with 100% quality to limit quality deterioration
                         $intermediateOptions = $options;
                         $intermediateOptions["extension"] = 'jpg';
                         $intermediateOptions["quality"] = 100;
@@ -101,7 +104,8 @@ class Plugin extends PluginBase
                 else
                 {
                     if (!$filters)
-                    { // End here if there are no filters to apply
+                    {
+                        // End here if there are no filters to apply
                         $image = Image::make($tempPath)->resize($width, $height)->save($newPath, $quality, $extension);
                         if ($newPath != $tempPath)
                         	File::move($newPath, $tempPath);
@@ -122,96 +126,105 @@ class Plugin extends PluginBase
             if (is_array($filters))
             {
 
+                // Iterate over filer
                 foreach ($filters as $filter)
                 {
-
+                    //
                     $arguments = array_values($filter);
                     switch ($arguments[0])
                     {
 
                         case 'blur':
-                            $image = $image->blur(isset($arguments[1]) ? $arguments[1] : 1);
+                            $image->blur(isset($arguments[1]) ? $arguments[1] : 1);
                         break;
 
                         case 'brightness':
-                            $image = $image->brightness($arguments[1]);
+                            $image->brightness($arguments[1]);
                         break;
 
                         case 'colorize':
-                            $image = $image->colorize($arguments[1], $arguments[2], $arguments[3]);
+                            $image->colorize($arguments[1], $arguments[2], $arguments[3]);
                         break;
 
                         case 'contrast':
-                            $image = $image->heighten($arguments[1]);
+                            $image->heighten($arguments[1]);
                         break;
 
                         case 'crop':
-                            $image = $image->crop($arguments[1], $arguments[2], isset($arguments[3]) ? $arguments[3] : 0, isset($arguments[4]) ? $arguments[4] : 0);
+                            $image->crop($arguments[1], $arguments[2], isset($arguments[3]) ? $arguments[3] : 0, isset($arguments[4]) ? $arguments[4] : 0);
                         break;
 
                         case 'flip':
-                            $image = $image->flip(isset($arguments[1]) ? $arguments[1] : "v");
+                            $image->flip(isset($arguments[1]) ? $arguments[1] : "v");
                         break;
 
                         case 'gamma':
-                            $image = $image->gamma($arguments[1]);
+                            $image->gamma($arguments[1]);
                         break;
 
                         case 'greyscale':
-                            $image = $image->greyscale();
+                            $image->greyscale();
                         break;
 
                         case 'heighten':
-                            $image = $image->heighten($arguments[1]);
+                            $image->heighten($arguments[1]);
                         break;
 
-                            /* Not working - review needed
+                        /* Not working - review needed
 
-                            case 'invert':
-                            $image=$image->invert();
-                            break;
+                        case 'invert':
+                        $image=$image->invert();
+                        break;
 
-                            */
+                        */
+
+                        case 'interlace':
+                          $image->interlace(isset($arguments[1]) ? $arguments[1] : true);
+                          break;
 
                         case 'limitColors':
-                            $image = $image->limitColors($arguments[1], isset($arguments[2]) ? $arguments[2] : null);
+                            $image->limitColors($arguments[1], isset($arguments[2]) ? $arguments[2] : null);
                         break;
 
                         case 'opacity':
-                            $image = $image->opacity($arguments[1]);
+                            $image->opacity($arguments[1]);
                         break;
 
                         case 'pixelate':
-                            $image = $image->pixelate($arguments[1]);
+                            $image->pixelate($arguments[1]);
                         break;
 
                         case 'resize':
-                            $image = $image->resize($arguments[1], isset($arguments[2]) ? $arguments[2] : null);
+                            $image->resize($arguments[1], isset($arguments[2]) ? $arguments[2] : null);
                         break;
 
                         case 'rotate':
-                            $image = $image->rotate($arguments[1]);
+                            if (!isset($arguments[2])
+                              $image->rotate($arguments[1]);
+                            else
+                              $image->rotate($arguments[1], $arguments[2]);
                         break;
 
                         case 'sharpen':
-                            $image = $image->sharpen(isset($arguments[1]) ? $arguments[1] : 10);
+                            $image->sharpen(isset($arguments[1]) ? $arguments[1] : 10);
                         break;
 
                         case 'widen':
-                            $image = $image->widen($arguments[1]);
+                            $image->widen($arguments[1]);
                         break;
 
                         default:
-                            EventLog::add("iresize / ifilter: Detected and ignored unknown filter >>" . $arguments[0] . "<<. See " . __FILE__);
+                            EventLog::add("mercator/media: Detected and ignored unknown filter >>" . $arguments[0] . "<<. See " . __FILE__);
                     }
 
                 }
             }
-            elseif (strcmp($filters, "")) $image = eval("{ return \$image->" . $filters . "; }");
+            elseif (strcmp($filters, ""))
+              $image = eval("{ return \$image->" . $filters . "; }");
 
             $image->save($newPath, $quality, $extension);
             if ($newPath != $tempPath)
-            	File::move($newPath, $tempPath);
+              File::move($newPath, $tempPath);
 
             // Prevent any other resizing replacer logic from running
             return true;
@@ -258,8 +271,14 @@ class Plugin extends PluginBase
     public function registerMarkupTags()
     {
         return [
-          'filters' => ['iresize' => [MediaExtensions::class , 'iresize'], 'ifilter' => [MediaExtensions::class , 'iresize'], ],
-          'functions' => ['exif' => [MediaExtensions::class , 'exif'], 'iptc' => [MediaExtensions::class , 'iptc'], ]
+          'filters' =>    [
+                            'iresize' => [MediaExtensions::class , 'iresize'],
+                            'ifilter' => [MediaExtensions::class , 'iresize']
+                          ],
+          'functions' =>  [
+                            'exif' => [MediaExtensions::class , 'exif'],
+                            'iptc' => [MediaExtensions::class , 'iptc']
+                          ]
         ];
     }
 }
