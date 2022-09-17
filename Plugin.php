@@ -27,7 +27,7 @@ class Plugin extends PluginBase
     {
         return ['name' => 'Media',
                 'author' => 'Helmut Kaufmann',
-                'homepage' => 'htpps://mercator.li'
+                'homepage' => 'htpps://mercator.li',
                 'description' => 'Image/Media Processing Plugin for Winter CMS, replacing resize and introducing advanced image filter capabilities based on the Intervention library.'];
     }
 
@@ -87,7 +87,7 @@ class Plugin extends PluginBase
                         if ($newPath != $tempPath)
                           File::move($newPath, $tempPath);
 
-    					// Prevent any other resizing replacer logic from running
+    					          // Prevent any other resizing replacer logic from running
                         return true;
                     }
                     else
@@ -129,91 +129,17 @@ class Plugin extends PluginBase
                 // Iterate over filer
                 foreach ($filters as $filter)
                 {
-                    //
                     $arguments = array_values($filter);
-                    switch ($arguments[0])
-                    {
+                    $command = $arguments[0];
+                    $arguments = array_shift($arguments);
 
-                        case 'blur':
-                            $image->blur(isset($arguments[1]) ? $arguments[1] : 1);
-                        break;
-
-                        case 'brightness':
-                            $image->brightness($arguments[1]);
-                        break;
-
-                        case 'colorize':
-                            $image->colorize($arguments[1], $arguments[2], $arguments[3]);
-                        break;
-
-                        case 'contrast':
-                            $image->heighten($arguments[1]);
-                        break;
-
-                        case 'crop':
-                            $image->crop($arguments[1], $arguments[2], isset($arguments[3]) ? $arguments[3] : 0, isset($arguments[4]) ? $arguments[4] : 0);
-                        break;
-
-                        case 'flip':
-                            $image->flip(isset($arguments[1]) ? $arguments[1] : "v");
-                        break;
-
-                        case 'gamma':
-                            $image->gamma($arguments[1]);
-                        break;
-
-                        case 'greyscale':
-                            $image->greyscale();
-                        break;
-
-                        case 'heighten':
-                            $image->heighten($arguments[1]);
-                        break;
-
-                        /* Not working - review needed
-
-                        case 'invert':
-                        $image=$image->invert();
-                        break;
-
-                        */
-
-                        case 'interlace':
-                          $image->interlace(isset($arguments[1]) ? $arguments[1] : true);
-                          break;
-
-                        case 'limitColors':
-                            $image->limitColors($arguments[1], isset($arguments[2]) ? $arguments[2] : null);
-                        break;
-
-                        case 'opacity':
-                            $image->opacity($arguments[1]);
-                        break;
-
-                        case 'pixelate':
-                            $image->pixelate($arguments[1]);
-                        break;
-
-                        case 'resize':
-                            $image->resize($arguments[1], isset($arguments[2]) ? $arguments[2] : null);
-                        break;
-
-                        case 'rotate':
-                            if (!isset($arguments[2])
-                              $image->rotate($arguments[1]);
-                            else
-                              $image->rotate($arguments[1], $arguments[2]);
-                        break;
-
-                        case 'sharpen':
-                            $image->sharpen(isset($arguments[1]) ? $arguments[1] : 10);
-                        break;
-
-                        case 'widen':
-                            $image->widen($arguments[1]);
-                        break;
-
-                        default:
+                    try {
+                        if (is_array($arguments))
+                          call_user_func_array(array($image, $command), $arguments);
+                        else
+                          call_user_func(array($image, $command));
+                    }
+                    catch (Exception $e) {
                             EventLog::add("mercator/media: Detected and ignored unknown filter >>" . $arguments[0] . "<<. See " . __FILE__);
                     }
 
@@ -273,7 +199,9 @@ class Plugin extends PluginBase
         return [
           'filters' =>    [
                             'iresize' => [MediaExtensions::class , 'iresize'],
-                            'ifilter' => [MediaExtensions::class , 'iresize']
+                            'ifilter' => [MediaExtensions::class , 'iresize'],
+                            'iprefetch' => [MediaExtensions::class , 'iprefetch'],
+                            'ithumb' => [MediaExtensions::class , 'ithumb']
                           ],
           'functions' =>  [
                             'exif' => [MediaExtensions::class , 'exif'],

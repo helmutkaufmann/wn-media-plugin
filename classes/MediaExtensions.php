@@ -113,4 +113,9 @@ class MediaExtensions extends \Backend\Classes\Controller
 		else
 			return Image::make($image)->iptc($type);
     }
+
+    public static function ithumb($image, $size)
+    {
+        return dirname($image) ."/_thumb$size/" . basename($image);
+    }
 }

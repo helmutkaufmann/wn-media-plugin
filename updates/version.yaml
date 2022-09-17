@@ -8,3 +8,4 @@
 1.0.000: Initial formal release.
 1.0.001: Reduced default compression values
 1.0.002: Simplifications
+1.0.003: Code re-write to simplify the application of the Intervention filters
