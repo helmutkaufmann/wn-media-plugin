@@ -55,7 +55,7 @@ class MediaExtensions extends \Backend\Classes\Controller
     public static function iresize($image, $width=null, $height=null, $filters=null, $extension=null, $quality=null)
     {
     	// Check if the file exists
-        $path = public_path(parse_url($image, PHP_URL_PATH));
+        $path = urldecode(public_path(parse_url($image, PHP_URL_PATH)));
         if (!File::exists($path)) {
             return $image;
         }
