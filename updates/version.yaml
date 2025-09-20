@@ -1,0 +1,11 @@
+0.9.001: Initial plugin version
+0.9.004: Added option to specify filters using Twig arrays. Added additional filters. Added EXIF and ITPC functions. Improved README.
+0.9.005: Updated composer.json (description, removed intervention cache requirement).
+0.9.006: General improvements.
+0.9.007: Bug fixes.
+0.9.008: Optimized speed.
+0.9.009: Check for updated source image and re-generate the resized one if teh image has changed.
+1.0.000: Initial formal release.
+1.0.001: Reduced default compression values
+1.0.002: Simplifications
+1.0.003: Code re-write to simplify the application of the Intervention filters
